@@ -4,23 +4,67 @@
 
 getwd()
 
+# Setting Working Directory
 setwd("~/Downloads/Data_Science_Specialization/Tests/Tests_R/ExploratoryWeek4")
 
-P25_1999 <- read.csv("Data/annual_conc_by_monitor_1999.csv", na.strings = "")
-P25_2012 <- read.csv("Data/annual_conc_by_monitor_2012.csv", na.strings = "")
+# Opening relevant libraries
+library(plyr)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
 
- 
+# Loading data from data folder
+NEI <- readRDS("Data/summarySCC_PM25.rds")
+SCC <- readRDS("Data/Source_Classification_Code.rds")
+NEI[NEI == ""] <- NA
+SCC[SCC == ""] <- NA
+
+# First check data
+names(NEI)
+head(NEI)
+glimpse(NEI)
+table(NEI$year)
+plot(table(NEI$fips))
+table(NEI$SCC)
+table(NEI$Pollutant)
+plot(NEI$Emissions)
+
+names(SCC)
+head(SCC)
+glimpse(SCC)
+table(SCC$Option.Group)
+
+# Check NAs
+NA_NEI <- as.data.frame(sapply(NEI, function(x) sum(is.na(x)))) # no NAs
+sum(is.na(NEI$fips))
+sum(is.na(NEI$SCC))
+sum(is.na(NEI$Pollutant))
+sum(is.na(NEI$Emissions))
+sum(is.na(NEI$type))
+sum(is.na(NEI$year))
+
+NA_SCC <- as.data.frame(sapply(SCC, function(x) sum(is.na(x)))) # some NAs
+
+# Joining datasets
+NEI_SCC <- left_join(NEI, SCC, by = "SCC")
+
+# Check NAs
+NA_NEI_SCC <- as.data.frame(sapply(NEI_SCC, function(x) sum(is.na(x))))
+
+1999
+2002
+2005
+2008
 
 
-names(P25_1999)
-head(P25_1999)
- str(P25_1999)
 
-names(P25_2012)
-head(P25_2012)
-str(P25_2012)
 
-names(P25_1999) == names(P25_2012)
+
+
+
+
+
+
 
 pmsub0 <- subset(P25_1999, State.Code == 36 & County.Code == 63 & Site.Num == 2008) 
 pmsub1 <- subset(P25_2012, State.Code == 36 & County.Code == 63 & Site.Num == 2008) 
