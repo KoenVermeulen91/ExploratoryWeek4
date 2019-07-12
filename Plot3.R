@@ -1,23 +1,31 @@
-### PLOT 2 ###
+### PLOT 3 ###
 
-# Have total emissions from PM2.5 decreased in the Baltimore City, Maryland (fips == "24510"
-# from 1999 to 2008? Use the base plotting system to make a plot answering this question.
+# Of the four types of sources indicated by the type (point, nonpoint, onroad, nonroad) variable, 
+# which of these four sources have seen decreases in emissions from 1999–2008 for Baltimore City? 
+# Which have seen increases in emissions from 1999–2008? Use the ggplot2 plotting system to make a plot answer this question.
 
-# Read data
+# Reading data
 NEI <- readRDS("Data/summarySCC_PM25.rds")
 
-# Subsetting Baltimore & aggregating by year
-NEI_Balt <- NEI[NEI$fips == "24510", ]
+# Subsetting Baltimore & aggregating by year & type
+NEI_Balt <- NEI_SCC[NEI_SCC$fips == "24510", ]
 
-SumByYear <- aggregate(NEI_Balt$Emissions ~ NEI_Balt$year, FUN = sum)
+SumByYearType <- aggregate(NEI_Balt$Emissions ~ NEI_Balt$year + NEI_Balt$type, FUN = sum)
+
+
+
+g <- ggplot(SumByYearType, aes(SumByYearType$`NEI_Balt$year`, 
+                               SumByYearType$`NEI_Balt$Emissions`, 
+                               color = SumByYearType$`NEI_Balt$type`))
 
 # Constructing plot
-png("Plot2.png",width=480,height=480)
+png("Plot3.png",width=480,height=480)
 
-barplot(height = SumByYear$`NEI_Balt$Emissions`,
-        names.arg = SumByYear$`NEI_Balt$year`,
-        main = "Total Emissions of PM2.5 in Baltimore",
-        ylab = "Emissions of PM2.5 (in tons)", 
-        xlab = "Year")
+g <- g + geom_line() +
+        xlab("Year") +
+        ylab("Emissions of PM2.5 (in tons)") +
+        ggtitle("Emissions of PM2.5 by year and type") +
+        theme(legend.title = element_blank())
+print(g)
 
 dev.off()

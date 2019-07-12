@@ -33,6 +33,7 @@ names(SCC)
 head(SCC)
 glimpse(SCC)
 table(SCC$Option.Group)
+table(SCC$Data.Category)
 
 # Check NAs
 NA_NEI <- as.data.frame(sapply(NEI, function(x) sum(is.na(x)))) # no NAs
@@ -51,10 +52,6 @@ NEI_SCC <- left_join(NEI, SCC, by = "SCC")
 # Check NAs
 NA_NEI_SCC <- as.data.frame(sapply(NEI_SCC, function(x) sum(is.na(x))))
 
-1999
-2002
-2005
-2008
 
 
 
